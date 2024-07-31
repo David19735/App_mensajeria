@@ -1,95 +1,113 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client'
+import React from 'react'
+import styled from 'styled-components'
+import { Message } from 'twilio/lib/twiml/MessagingResponse';
 
-export default function Home() {
+function Page() {
+
+  const onSubmit= async(e)=>{
+    e.preventDefault();
+
+    const formData=new FormData(e.target);
+
+      const sms={
+        phone:formData.get('phone'),
+        message:formData.get('message')
+      }
+
+      const res=await fetch('/api/sms',{
+        method: 'POST',
+        body:JSON.stringify(sms),
+        headers:{
+          "Content-Type":"application/json"
+        }
+      })
+
+      const data= await res.json();
+      console.log(data);
+      alert('mensaje enviado')
+
+  }
+
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <Formulario onSubmit={onSubmit}>
+      
+        <h1>Envía un mensaje</h1>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+      <Input
+        type='tel'
+        name='phone'
+        placeholder='Número telefónico'
+      />
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+      <Mensaje
+      name="message"
+      placeholder='Escribe tu mensaje'
+      />
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
+    <Boton type='submit'>Enviar</Boton>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+    </Formulario>
+  )
 }
+//``
+const Formulario=styled.form`
+    width: 50%;
+    height: 75%;
+    background: linear-gradient(rgba(5,7,12,0.60),rgba(5,7,12,0.60));
+    text-align: center;
+    border-radius:5px;
+    box-shadow: 0.5px 1px 0.5px rbga(0,0,0,0.5);
+    color:white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+`;
+
+
+
+const Input=styled.input`
+  width: 70%;
+  height: 13%;
+  font-size: 20px;
+  border: none;
+  padding: 10px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 5px;
+  outline: none;
+  color: white;
+`;
+
+const Mensaje=styled.textarea`
+  width: 70%;
+  height: 30%;
+  font-size: 20px;
+  border: none;
+  padding: 10px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 5px;
+  outline: none;
+  color: white;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  letter-spacing: 1px;
+
+`;
+
+const Boton=styled.button`
+  width: 25%;
+  height: 10%;
+  background: transparent;
+  color: white;
+  text-transform: uppercase;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  border-radius: 5px;
+  &:hover{
+    transform: scale(1.1);
+  }
+`;
+
+export default Page
